@@ -6,6 +6,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class QuizActivity extends AppCompatActivity {
@@ -15,8 +16,66 @@ public class QuizActivity extends AppCompatActivity {
     private Button mTrueButton;
     private Button mFalseButton;
 
+    // Variable for the nest button
+    private Button mNextButton;
 
-    // I didn;t wrie this method. It was given to me by google.
+    // Variable for the question string
+    private TextView mQuestionTextView;
+
+    // The question that will be used. It is an array of type
+    // Question, that contains 5 Questions. I is a hardcoded
+    // array. In most apps, you would want your data to come from
+    // somewhere else. (databes, internet) Not be hard coded.
+    private Question[] mQuestionBank = new Question[] {
+            new Question(R.string.question_oceans, true),
+            new Question(R.string.question_mideast, false),
+            new Question(R.string.question_africa, false),
+            new Question(R.string.question_america, true),
+            new Question(R.string.question_asia, true)
+    };
+
+    private int mCurrentIndex = 0;
+
+
+    // Private methods that will be used inside he OnCreat
+    private  void  updateQuestion() {
+        //Get the Question instance stored at the mCurrentIndex of the
+        //QuestionBank array. Then call the getTextResId method (property)
+        // o return the inteer value that points to he string
+        // resource in strins.xml that we want to use.
+        int question = mQuestionBank[mCurrentIndex].getTextResId();
+
+        //Assign he inteer for the string resource to the
+        //textview so that the question text will display.
+        mQuestionTextView.setText(question);
+
+    }
+
+    private void checkAnswer(boolean userPressedTrue){
+
+        //Create a bolean to represent he actual answe of
+        // the current question we are on.
+        boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
+
+        //declar an integer that will be a pointer to the string
+        // rsource that will be used for the toast message
+
+        int messageResId = 0;
+        //Compare the actual answer to the answer that was passed
+        //into this method. If they match, the message is correct.
+        //else it is incorrect. Assign the R in value to the
+        // messageResId.
+
+        if (userPressedTrue == answerIsTrue) {
+            messageResId = R.string.correct_toast;
+
+        }  else
+        {
+            messageResId = R.string.incorrect_toast;
+        }
+    }
+
+    // I didn;t write this method. It was given to me by google.
     // It is the 'setup' method for the app.
     // It will be called when the ap launches.
     @Override
@@ -25,6 +84,11 @@ public class QuizActivity extends AppCompatActivity {
         setContentView(R.layout.activity_quiz);
 
         // Begin code I write*******************
+
+        // Get a 'handle' to the textview in the layout
+        mQuestionTextView = (TextView) findViewById(R.id.question_text_view);
+
+
 
         // Fetch the widget control from the view, and then
         //cast and assign it to the class variable we setup
@@ -44,9 +108,7 @@ public class QuizActivity extends AppCompatActivity {
                 // The conext, which will usually be Activity.this,
                 // The Message wich will usuall be a string from strings.xml
                 //TheLength, which will be one of the predefined constants.
-                Toast.makeText(QuizActivity.this,
-                                R.string.correct_toast,
-                                Toast.LENGTH_SHORT).show();
+                checkAnswer(true);
             }
         });
 
@@ -56,11 +118,29 @@ public class QuizActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                Toast.makeText(QuizActivity.this,
-                        R.string.incorrect_toast,
-                        Toast.LENGTH_SHORT).show();
+                // call he checkAnser method that is declared at the top
+                // of this class. It will take in the bool value that they
+                //selected, and do the work of determining if the answer
+                // is correct, Eiher way it will toast the message to the
+                //screen.
+                checkAnswer(false);
             }
         });
+
+        mNextButton = (Button) findViewById(R.id.next_button);
+        mNextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
+                // this method is declared at the top of the class. It
+                // habndles updating the question text.
+                updateQuestion();
+            }
+        });
+
+        // This is delcared up above. It does the work of changing
+        // to the next question in the array
+        updateQuestion();
         //End code I write********************************************
     }
 

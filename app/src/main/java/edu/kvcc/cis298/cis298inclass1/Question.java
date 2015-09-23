@@ -19,7 +19,7 @@ public class Question {
         mTextResId = textResId;
         mAnswerTrue = answerTrue;
     }
-    
+
     // Getter for mAnswerTrue
     public boolean isAnswerTrue() {
         return mAnswerTrue;
