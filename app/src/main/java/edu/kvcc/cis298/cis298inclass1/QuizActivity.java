@@ -2,6 +2,7 @@ package edu.kvcc.cis298.cis298inclass1;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -144,9 +145,46 @@ public class QuizActivity extends AppCompatActivity {
         updateQuestion();
         //End code I write********************************************
     }
+// Static string to use for the override methods
+    private static final String TAG = "QuizActivity";
 
 
-        // These are methods we did not wrie, but google provided.
+    // Below are the main activity methods that can be
+    // overriden to do 'work' with out application
+    //the app will call all of these in sequence as it
+    // loads, and as it is closed.
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy() called");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop() called");
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause() called");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG,"onResume() called");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart() called");
+    }
+
+// These are methods we did not wrie, but google provided.
         // If we ge to using menus, we will need hem. They can be ignored for now
 
     // Begin unneeded google methods*****************************************************
