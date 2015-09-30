@@ -7,6 +7,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,8 +16,14 @@ public class QuizActivity extends AppCompatActivity {
 // Create a class level widet variables so that we will
     // have access to stuff from the view.
     //No value yet. Just declard the variable
-    private Button mTrueButton;
-    private Button mFalseButton;
+    private RadioGroup mQuestionGroup;
+
+    private RadioButton mChoice1;
+    private RadioButton mChoice2;
+    private RadioButton mChoice3;
+    private RadioButton mChoice4;
+
+    private Button mSubmitButton;
 
     // Variable for the nest button
     private Button mNextButton;
@@ -24,15 +32,17 @@ public class QuizActivity extends AppCompatActivity {
     private TextView mQuestionTextView;
 
     // The question that will be used. It is an array of type
-    // Question, that contains 5 Questions. I is a hardcoded
+    // Question, that contains 2 Questions. It is a hardcoded
     // array. In most apps, you would want your data to come from
     // somewhere else. (databes, internet) Not be hard coded.
     private Question[] mQuestionBank = new Question[] {
-            new Question(R.string.question_oceans, true),
-            new Question(R.string.question_mideast, false),
-            new Question(R.string.question_africa, false),
-            new Question(R.string.question_america, true),
-            new Question(R.string.question_asia, true)
+            new Question(R.string.question_1_multiple,R.id.multple_choice_3,
+                    new int[]{R.string.question_1_choice1, R.string.question_1_choice2,
+                            R.string.question_1_choice3,R.string.question_1_choice4}),
+
+            new Question(R.string.question_2_multiple,R.id.multple_choice_2,
+                    new int[]{R.string.question_2_choice1, R.string.question_2_choice2,
+                            R.string.question_2_choice3,R.string.question_2_choice4})
     };
 
     private int mCurrentIndex = 0;
@@ -42,32 +52,41 @@ public class QuizActivity extends AppCompatActivity {
     private  void  updateQuestion() {
         //Get the Question instance stored at the mCurrentIndex of the
         //QuestionBank array. Then call the getTextResId method (property)
-        // o return the inteer value that points to he string
-        // resource in strins.xml that we want to use.
+        // to return the integer value that points to he string
+        // resource in strings.xml that we want to use.
         int question = mQuestionBank[mCurrentIndex].getTextResId();
 
         //Assign he inteer for the string resource to the
         //textview so that the question text will display.
         mQuestionTextView.setText(question);
 
+        //Fetch the question choice strings from the question object
+        int[] choices = mQuestionBank[mCurrentIndex].getChoiceResIds();
+
+        //Assign each question choice text o the text property of the
+        //radio button.
+        mChoice1.setText(choices[0]);
+        mChoice2.setText(choices[1]);
+        mChoice3.setText(choices[2]);
+        mChoice4.setText(choices[3]);
+
     }
 
-    private void checkAnswer(boolean userPressedTrue){
+    private void checkAnswer(int selectedRadioButtonId){
 
-        //Create a bolean to represent he actual answe of
+        //Create a int to represent he actual answer of
         // the current question we are on.
-        boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
+        int correctAnswer = mQuestionBank[mCurrentIndex].getCorrectAnswerResId();
+
 
         //declar an integer that will be a pointer to the string
         // rsource that will be used for the toast message
 
         int messageResId = 0;
-        //Compare the actual answer to the answer that was passed
-        //into this method. If they match, the message is correct.
-        //else it is incorrect. Assign the R in value to the
-        // messageResId.
-
-        if (userPressedTrue == answerIsTrue) {
+        // Does the radio buon id of the answe they submited
+        // match the radio buton id of correct answer.
+        // If so, they got it right, else, wrong
+        if (selectedRadioButtonId == correctAnswer) {
             messageResId = R.string.correct_toast;
 
         }  else
@@ -90,44 +109,28 @@ public class QuizActivity extends AppCompatActivity {
         // Get a 'handle' to the textview in the layout
         mQuestionTextView = (TextView) findViewById(R.id.question_text_view);
 
+        mQuestionGroup = (RadioGroup) findViewById(R.id.multiple_group);
 
+        mChoice1 = (RadioButton) findViewById(R.id.multple_choice_1);
+        mChoice2 = (RadioButton) findViewById(R.id.multple_choice_2);
+        mChoice3 = (RadioButton) findViewById(R.id.multple_choice_3);
+        mChoice4 = (RadioButton) findViewById(R.id.multple_choice_4);
 
-        // Fetch the widget control from the view, and then
-        //cast and assign it to the class variable we setup
-        mTrueButton = (Button) findViewById(R.id.true_button);
-
-        //Now that I have a 'andle' to the view widget, I can
-        //Setup an OnClickListener for the widget
-        //This OnClickListner uses an anonymous inner class.
-        //We are passing what we want to have happen onClick.
-        mTrueButton.setOnClickListener(new View.OnClickListener() {
+        mSubmitButton = (Button) findViewById(R.id.submit_button);
+        mSubmitButton.setOnClickListener(new View.OnClickListener(){
             @Override
-            public void onClick(View view) {
-                //Use the Toast class to print a message to the
-                // screen that will fade out after the duration
-                // listed as LENGTH_SHORT
-                // This method requires 3 parameters.
-                // The conext, which will usually be Activity.this,
-                // The Message wich will usuall be a string from strings.xml
-                //TheLength, which will be one of the predefined constants.
-                checkAnswer(true);
+            public void onClick(View view){
+                // Query the radio button group to find out which radio button
+                // was selected. Store the id of the selected one in the
+                // variable selectedAnswerId.
+                int selectedAnswer = mQuestionGroup.getCheckedRadioButtonId();
+                // pass the id of th selected radio button into the checkAnswer
+                //method. The checkAnswer handles toasting whether it is correct
+                // or not.
+                checkAnswer(selectedAnswer);
             }
         });
 
-        //  See the notes from the TrueBuon It is he same.
-        mFalseButton = (Button) findViewById(R.id.false_button);
-        mFalseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                // call he checkAnser method that is declared at the top
-                // of this class. It will take in the bool value that they
-                //selected, and do the work of determining if the answer
-                // is correct, Eiher way it will toast the message to the
-                //screen.
-                checkAnswer(false);
-            }
-        });
 
         mNextButton = (Button) findViewById(R.id.next_button);
         mNextButton.setOnClickListener(new View.OnClickListener() {

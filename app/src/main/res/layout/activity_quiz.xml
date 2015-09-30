@@ -16,20 +16,45 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/true_button"
+        <RadioGroup
+            android:id="@+id/multiple_group"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/true_button" />
+            android:layout_height="wrap_content">
 
-        <Button
-            android:id="@+id/false_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/false_button" />
+            <RadioButton
+                android:id="@+id/multple_choice_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <RadioButton
+                android:id="@+id/multple_choice_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <RadioButton
+                android:id="@+id/multple_choice_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <RadioButton
+                android:id="@+id/multple_choice_4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+
+        </RadioGroup>
+
+
+
+
+
 
     </LinearLayout>
-
+    <Button
+        android:id="@+id/submit_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/submit_buton"/>
     <Button
         android:id="@+id/next_button"
         android:layout_width="wrap_content"
