@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:text="@string/true_button" />
 
-        <Button
+        <Buttonhttps://community.broadcom.com/community/wiced-smart/wiced-smart-forums/blog/2015/08/03/popular-discussion-links
             android:id="@+id/false_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
