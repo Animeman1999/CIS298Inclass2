@@ -1,5 +1,6 @@
 package edu.kvcc.cis298.cis298inclass1;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,6 +20,8 @@ public class QuizActivity extends AppCompatActivity {
 
     // Variable for the nest button
     private Button mNextButton;
+
+    private Button mCheatButton;
 
     // Variable for the question string
     private TextView mQuestionTextView;
@@ -137,6 +140,16 @@ public class QuizActivity extends AppCompatActivity {
                 // this method is declared at the top of the class. It
                 // habndles updating the question text.
                 updateQuestion();
+            }
+        });
+
+        mCheatButton = (Button) findViewById(R.id.cheat_button);
+        mCheatButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
+                Intent i = CheatActivity.newIntent(QuizActivity.this, answerIsTrue);
+                startActivity(i);
             }
         });
 
