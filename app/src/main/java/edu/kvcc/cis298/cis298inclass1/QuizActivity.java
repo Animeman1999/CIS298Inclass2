@@ -1,5 +1,6 @@
 package edu.kvcc.cis298.cis298inclass1;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,6 +26,14 @@ public class QuizActivity extends AppCompatActivity {
 
     // Variable for the question string
     private TextView mQuestionTextView;
+
+    //Private bool to represent if a person used the cheat activity and
+    //clicked on the cheat buttton of it.
+    private boolean mIsCheater;
+
+    //Static constant to be used as a identifier for a response that will
+    // come back from a start activity for result.
+    private static final int REQUEST_CODE_CHEAT = 0;
 
     // The question that will be used. It is an array of type
     // Question, that contains 5 Questions. I is a hardcoded
@@ -65,6 +74,14 @@ public class QuizActivity extends AppCompatActivity {
         // rsource that will be used for the toast message
 
         int messageResId = 0;
+
+        if (mIsCheater){
+            messageResId = R.string.judement_toast;
+
+        }
+            else{
+
+
         //Compare the actual answer to the answer that was passed
         //into this method. If they match, the message is correct.
         //else it is incorrect. Assign the R in value to the
@@ -77,6 +94,7 @@ public class QuizActivity extends AppCompatActivity {
         {
             messageResId = R.string.incorrect_toast;
         }
+    }
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show();
     }
 
@@ -139,6 +157,7 @@ public class QuizActivity extends AppCompatActivity {
                 mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
                 // this method is declared at the top of the class. It
                 // habndles updating the question text.
+                mIsCheater = false;
                 updateQuestion();
             }
         });
@@ -149,7 +168,7 @@ public class QuizActivity extends AppCompatActivity {
             public void onClick(View view){
                 boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
                 Intent i = CheatActivity.newIntent(QuizActivity.this, answerIsTrue);
-                startActivity(i);
+                startActivityForResult(i,REQUEST_CODE_CHEAT);
             }
         });
 
@@ -189,6 +208,26 @@ public class QuizActivity extends AppCompatActivity {
         savedInstanceState.putInt(KEY_INDEX,mCurrentIndex);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK) {
+            //Something Went Wrong
+            return;
+        }
+        // IF THE REQUEST CODE MATCHES THE ONE WE SENT WHEN WE STARTED
+        //THE NEW ACTIVITY, THEN WE WANT O DO WORK WITH IT.
+        if (requestCode == REQUEST_CODE_CHEAT){
+            if (data == null){
+                //There was no returned data, CAN'T DO ANYTHING
+                return;
+            }
+            //IT IS THE CORRECT REQUEST CODE, AND THERE IS DAA THAC CAN
+            //BE USED. SED THE DATA OBJECT O THE STATIC METHOD ON CheatActivity
+            //which will return whether or no the user cheated or not.
+            //Then assign the result to mIsCheater boolean.
+            mIsCheater = CheatActivity.wasAnswerShown(data);
+        }
+    }
 
     // Below are the main activity methods that can be
     // overriden to do 'work' with out application
