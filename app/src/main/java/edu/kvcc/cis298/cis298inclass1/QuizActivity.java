@@ -131,7 +131,6 @@ public class QuizActivity extends AppCompatActivity {
             }
         });
 
-
         mNextButton = (Button) findViewById(R.id.next_button);
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
